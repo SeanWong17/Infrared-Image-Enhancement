@@ -16,7 +16,9 @@
 
 该增强算法遵循“分解 → 处理 → 融合”的三步策略：
 
-$$I_{original} \xrightarrow{分解} (I_{base}, I_{detail}) \xrightarrow{处理} (I'_{base}, I'_{detail}) \xrightarrow{融合} I_{enhanced}$$
+```math
+I_{original} \xrightarrow{分解} (I_{base}, I_{detail}) \xrightarrow{处理} (I'_{base}, I'_{detail}) \xrightarrow{融合} I_{enhanced}
+```
 
 1.  **图像分解 (Decomposition)**: 使用**双边滤波器 (Bilateral Filter)** 从原图 $I_{original}$ 中分离出代表大尺度、平缓变化的基础层 $I_{base}$，因为它能在平滑的同时保持边缘。随后，通过原图与平滑后的基础层相减，得到代表边缘和纹理的细节层 $I_{detail}$。
     $$I_{base} = \text{BilateralFilter}(I_{original})$$
