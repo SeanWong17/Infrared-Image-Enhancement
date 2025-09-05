@@ -50,7 +50,7 @@ I_{enhanced} = \text{Normalize}(\,I'_{base} + I'_{detail}\,)
 克隆本项目并安装所需的 Python 依赖包。
 
 ```bash
-git clone [https://github.com/your-username/Infrared-Image-Enhancement.git](https://github.com/your-username/Infrared-Image-Enhancement.git)
+git clone [https://github.com/SeanWong17/Infrared-Image-Enhancement.git](https://github.com/your-username/Infrared-Image-Enhancement.git)
 cd Infrared-Image-Enhancement
 pip install -r requirements.txt
 ```
