@@ -59,7 +59,8 @@ def apply_decomposition_enhancement(input_path, output_path):
     lut = cdf_normalized.astype('uint8')
     
     # 应用查找表，完成基础层处理
-    base_layer_processed_8bit = cv2.LUT(cv2.normalize(hist_input, None, 0, 65535, cv2.NORM_MINMAX, dtype=cv2.CV_16U), lut)
+    # base_layer_processed_8bit = cv2.LUT(cv2.normalize(hist_input, None, 0, 65535, cv2.NORM_MINMAX, dtype=cv2.CV_16U), lut)
+    base_layer_processed_8bit = lut[hist_input]
 
     # 2.2 处理细节层
     print("阶段 2.2: 裁剪并缩放细节层...")
