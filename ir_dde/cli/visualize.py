@@ -49,15 +49,15 @@ def build_panel(raw: np.ndarray, enhanced: np.ndarray, debug: dict[str, np.ndarr
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Visualize the Open DDE v3-like pipeline and intermediate maps.")
-    parser.add_argument("-i", "--input", default="examples/single/original_16bit.tif", help="Input infrared image path.")
-    parser.add_argument("-o", "--output", default="comparisons/pipeline_panel.png", help="Panel output path.")
-    parser.add_argument("--enhanced_out", default="", help="Optional path to save the enhanced image itself.")
+    parser = argparse.ArgumentParser(description="可视化 Open DDE v3-like 管线及其中间结果。")
+    parser.add_argument("-i", "--input", default="examples/single/original_16bit.tif", help="输入红外图像路径。")
+    parser.add_argument("-o", "--output", default="comparisons/pipeline_panel.png", help="拼图面板输出路径。")
+    parser.add_argument("--enhanced_out", default="", help="可选：单独保存增强结果图像的路径。")
     parser.add_argument(
         "--preset",
         default="balanced",
         choices=["balanced", "detail_plus", "noise_safe", "hot_scene", "radiometric_safe"],
-        help="Tuning preset.",
+        help="调参预设。",
     )
     args = parser.parse_args()
 
@@ -70,9 +70,9 @@ def main() -> int:
     if args.enhanced_out:
         save_image(args.enhanced_out, enhanced)
 
-    print(f"✅ Saved pipeline panel to {args.output}")
+    print(f"✅ 已保存管线可视化面板: {args.output}")
     if args.enhanced_out:
-        print(f"✅ Saved enhanced output to {args.enhanced_out}")
+        print(f"✅ 已保存增强结果: {args.enhanced_out}")
     return 0
 
 

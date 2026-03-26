@@ -6,15 +6,15 @@ from ir_dde import batch_enhance, get_preset
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Batch enhance infrared TIFF files with the Open DDE v3-like pipeline.")
-    parser.add_argument("-i", "--input_dir", required=True, help="Input directory containing TIFF files.")
-    parser.add_argument("-o", "--output_dir", required=True, help="Output directory.")
-    parser.add_argument("--out_ext", default=".jpg", choices=[".jpg", ".png", ".bmp", ".tif"], help="Output format.")
+    parser = argparse.ArgumentParser(description="使用 Open DDE v3-like 管线批量增强红外 TIFF 图像。")
+    parser.add_argument("-i", "--input_dir", required=True, help="包含 TIFF 文件的输入目录。")
+    parser.add_argument("-o", "--output_dir", required=True, help="输出目录。")
+    parser.add_argument("--out_ext", default=".jpg", choices=[".jpg", ".png", ".bmp", ".tif"], help="输出格式。")
     parser.add_argument(
         "--preset",
         default="balanced",
         choices=["balanced", "detail_plus", "noise_safe", "hot_scene", "radiometric_safe"],
-        help="Tuning preset.",
+        help="调参预设。",
     )
     args = parser.parse_args()
 

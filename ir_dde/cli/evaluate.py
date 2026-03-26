@@ -54,20 +54,20 @@ def summarize(rows: list[dict[str, float | str]]) -> dict[str, float]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Evaluate enhanced infrared outputs against a robust linear baseline.")
-    parser.add_argument("--raw_dir", default="examples/batch/raw", help="Directory containing raw TIFF images.")
-    parser.add_argument("--enhanced_dir", required=True, help="Directory containing enhanced outputs.")
-    parser.add_argument("--csv", default="reports/eval_metrics.csv", help="CSV output path.")
+    parser = argparse.ArgumentParser(description="将增强结果与鲁棒线性拉伸基线进行评估比较。")
+    parser.add_argument("--raw_dir", default="examples/batch/raw", help="包含原始 TIFF 图像的目录。")
+    parser.add_argument("--enhanced_dir", required=True, help="包含增强结果的目录。")
+    parser.add_argument("--csv", default="reports/eval_metrics.csv", help="CSV 输出路径。")
     args = parser.parse_args()
 
     rows = evaluate_folder(Path(args.raw_dir), Path(args.enhanced_dir))
     if not rows:
-        print("⚠️ No matched raw/enhanced pairs were found.")
+        print("⚠️ 未找到匹配的原图与增强结果对。")
         return 1
 
     write_csv(rows, Path(args.csv))
     summary = summarize(rows)
-    print(f"✅ Wrote metrics for {len(rows)} image pairs to {args.csv}")
+    print(f"✅ 已为 {len(rows)} 组图像写出评估结果: {args.csv}")
     print(
         "   "
         f"entropy_gain={summary['entropy_gain']:.3f}, "

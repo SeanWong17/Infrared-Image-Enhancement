@@ -1,5 +1,7 @@
 # Open DDE: 基于图像分解的红外图像增强项目
 
+[中文](README.md) | [English](README.en.md)
+
 [![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![OpenCV](https://img.shields.io/badge/OpenCV-4.x-green.svg)](https://opencv.org/)

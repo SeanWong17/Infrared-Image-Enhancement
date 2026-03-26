@@ -21,25 +21,25 @@ def build_config(args: argparse.Namespace) -> OpenDDEV3Config:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Enhance a single infrared image with the Open DDE v3-like pipeline.")
-    parser.add_argument("-i", "--input", required=True, help="Input infrared image path.")
-    parser.add_argument("-o", "--output", required=True, help="Output image path.")
+    parser = argparse.ArgumentParser(description="使用 Open DDE v3-like 管线增强单张红外图像。")
+    parser.add_argument("-i", "--input", required=True, help="输入红外图像路径。")
+    parser.add_argument("-o", "--output", required=True, help="输出图像路径。")
     parser.add_argument(
         "--preset",
         default="balanced",
         choices=["balanced", "detail_plus", "noise_safe", "hot_scene", "radiometric_safe"],
-        help="Tuning preset.",
+        help="调参预设。",
     )
-    parser.add_argument("--d2br", type=float, default=1.0, help="Detail-to-background ratio.")
-    parser.add_argument("--detail_gain_max", type=float, default=1.2, help="Maximum local detail gain.")
-    parser.add_argument("--detail_amplitude", type=float, default=0.18, help="Signed detail amplitude after clipping.")
-    parser.add_argument("--detail_threshold_scale", type=float, default=1.4, help="Residual amplitude gate relative to noise.")
-    parser.add_argument("--spatial_threshold", type=float, default=0.15, help="Minimum edge confidence for enhancement.")
-    parser.add_argument("--base_local_contrast_mix", type=float, default=0.20, help="CLAHE contribution in base branch.")
-    parser.add_argument("--hotspot_protect", type=float, default=0.35, help="Hot region protection strength.")
-    parser.add_argument("--output_p_lo", type=float, default=0.5, help="Lower output remap percentile.")
-    parser.add_argument("--output_p_hi", type=float, default=99.5, help="Upper output remap percentile.")
-    parser.add_argument("--use_dog", action="store_true", help="Enable DoG edge boost on top of guided decomposition.")
+    parser.add_argument("--d2br", type=float, default=1.0, help="细节与背景的融合比例。")
+    parser.add_argument("--detail_gain_max", type=float, default=1.2, help="局部细节增益上限。")
+    parser.add_argument("--detail_amplitude", type=float, default=0.18, help="限幅后的有符号细节幅度。")
+    parser.add_argument("--detail_threshold_scale", type=float, default=1.4, help="相对噪声估计的细节门限倍率。")
+    parser.add_argument("--spatial_threshold", type=float, default=0.15, help="触发增强所需的最小边缘置信度。")
+    parser.add_argument("--base_local_contrast_mix", type=float, default=0.20, help="基础层中局部对比度分支的混合比例。")
+    parser.add_argument("--hotspot_protect", type=float, default=0.35, help="高亮热点保护强度。")
+    parser.add_argument("--output_p_lo", type=float, default=0.5, help="输出重映射的低百分位。")
+    parser.add_argument("--output_p_hi", type=float, default=99.5, help="输出重映射的高百分位。")
+    parser.add_argument("--use_dog", action="store_true", help="在引导滤波分解基础上附加 DoG 边缘增强。")
     args = parser.parse_args()
 
     input_path = Path(args.input)
@@ -49,7 +49,7 @@ def main() -> int:
 
     config = build_config(args)
     metrics = enhance_image_file(input_path, args.output, config=config)
-    print("--- Open DDE v3-like enhancement complete ---")
+    print("--- Open DDE v3-like 增强完成 ---")
     print(f"✅ 结果已保存至: {Path(args.output).resolve()}")
     print(
         "   "
