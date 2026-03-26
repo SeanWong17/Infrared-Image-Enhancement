@@ -65,3 +65,10 @@ docker-compose.yml
 # IDE
 .idea/
 .vscode/
+
+# Generated outputs
+output/
+output_batch/
+artifacts/
+reports/
+comparisons/

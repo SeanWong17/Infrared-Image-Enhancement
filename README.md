@@ -50,7 +50,7 @@ I_{enhanced} = \text{Normalize}(\,I'_{base} + I'_{detail}\,)
 克隆本项目并安装所需的 Python 依赖包。
 
 ```bash
-git clone [https://github.com/SeanWong17/Infrared-Image-Enhancement.git](https://github.com/your-username/Infrared-Image-Enhancement.git)
+git clone https://github.com/SeanWong17/Infrared-Image-Enhancement.git
 cd Infrared-Image-Enhancement
 pip install -r requirements.txt
 ```
@@ -61,16 +61,57 @@ pip install -r requirements.txt
 
 ### 3. 执行增强脚本
 
-运行 `enhance.py` 脚本来处理图像。您可以通过命令行参数指定输入和输出文件，这使得批处理和集成变得容易。
+当前仓库已经提供一个 `Open DDE v3-like` 的基础实现：
+
+- `enhance.py`: 单张图像增强
+- `enhance_v2.py`: 文件夹批处理
+
+默认预设是 `balanced`，另外还提供了 `detail_plus`、`noise_safe`、`hot_scene`、`radiometric_safe` 等预设。
 
 ```bash
-# 语法: python enhance.py -i <输入文件> -o <输出文件>
-
-# 处理默认的示例图像
+# 单张图像增强
 python enhance.py -i images/original_16bit.tif -o output/enhanced_result.png
+
+# 使用更激进的细节增强预设
+python enhance.py -i images/original_16bit.tif -o output/enhanced_detail.png --preset detail_plus
+
+# 批处理整个目录
+python enhance_v2.py -i examples/raw -o output_batch --out_ext .png --preset balanced
 ```
 
-处理完成后，您可以在 `output/` 文件夹中找到增强后的图像。
+单图处理完成后，输出会保存到指定路径；批处理会保持相对目录结构写入输出目录。
+
+### 4. 基础验证
+
+项目包含最小 smoke test，可用于确认核心管线和单图输出正常工作：
+
+```bash
+python -m unittest discover -s tests
+```
+
+### 5. 评估与可视化
+
+项目已经提供了无参考评估和中间结果可视化脚本：
+
+```bash
+# 评估增强结果，相对于鲁棒线性拉伸基线输出 CSV
+python scripts/evaluate.py --raw_dir examples/raw --enhanced_dir output_batch --csv reports/eval_metrics.csv
+
+# 生成算法中间图层和最终结果的拼图面板
+python scripts/visualize_pipeline.py -i images/original_16bit.tif -o comparisons/pipeline_panel.png
+```
+
+### 6. 目录结构
+
+当前建议的目录约定如下：
+
+- `src/ir_dde/`: 核心算法实现
+- `scripts/`: 评估与可视化工具
+- `tests/`: 最小 smoke tests
+- `docs/`: DDE 公式拆解和 v3 设计文档
+- `examples/raw/`: 原始红外样例
+- `examples/linear/`: 线性拉伸样例
+- `examples/enhanced/`: 增强结果样例
 
 ## 展望
 
@@ -78,6 +119,13 @@ python enhance.py -i images/original_16bit.tif -o output/enhanced_result.png
 * **参数调优**: 根据具体的成像设备、场景内容和应用需求进行仔细的调优。
 * **自适应参数**: 进一步研究自适应的参数选择策略，使算法对不同场景更具鲁棒性。
 * **算法融合**: 结合其他图像处理技术，如多尺度分解（小波变换）等，探索更优的增强效果。
+
+## 设计资料
+
+如果您希望把当前仓库继续演进为更完整的开源 `DDE-like` 红外增强项目，可先阅读以下设计文档：
+
+- `docs/dde_formula_breakdown.md`: DDE 与分解类红外增强的公式级拆解。
+- `docs/dde_v3_implementation_plan.md`: 将当前实现升级为“类 FLIR DDE v3”的工程方案。
 
 ## 📄 License
 
