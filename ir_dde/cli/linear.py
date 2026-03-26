@@ -54,8 +54,8 @@ def convert_folder(input_dir: Path, output_dir: Path, out_ext: str) -> tuple[int
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate linearly normalized 8-bit baseline images from thermal TIFF files.")
-    parser.add_argument("-i", "--input_dir", default="examples/raw", help="Input directory containing TIFF files.")
-    parser.add_argument("-o", "--output_dir", default="examples/linear", help="Output directory for normalized images.")
+    parser.add_argument("-i", "--input_dir", default="examples/batch/raw", help="Input directory containing TIFF files.")
+    parser.add_argument("-o", "--output_dir", default="examples/batch/linear", help="Output directory for normalized images.")
     parser.add_argument("--out_ext", default=".png", choices=[".png", ".jpg", ".bmp"], help="Output image extension.")
     args = parser.parse_args()
 

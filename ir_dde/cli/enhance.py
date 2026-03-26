@@ -1,13 +1,5 @@
 import argparse
-import os
-import sys
 from pathlib import Path
-
-
-ROOT = Path(__file__).resolve().parent
-SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
 
 from ir_dde import OpenDDEV3Config, enhance_image_file, get_preset
 
@@ -29,7 +21,7 @@ def build_config(args: argparse.Namespace) -> OpenDDEV3Config:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Open DDE v3-like infrared image enhancement.")
+    parser = argparse.ArgumentParser(description="Enhance a single infrared image with the Open DDE v3-like pipeline.")
     parser.add_argument("-i", "--input", required=True, help="Input infrared image path.")
     parser.add_argument("-o", "--output", required=True, help="Output image path.")
     parser.add_argument(
@@ -50,14 +42,15 @@ def main() -> int:
     parser.add_argument("--use_dog", action="store_true", help="Enable DoG edge boost on top of guided decomposition.")
     args = parser.parse_args()
 
-    if not os.path.exists(args.input):
+    input_path = Path(args.input)
+    if not input_path.exists():
         print(f"错误: 输入文件 '{args.input}' 不存在。请检查路径。")
         return 1
 
     config = build_config(args)
-    metrics = enhance_image_file(args.input, args.output, config=config)
+    metrics = enhance_image_file(input_path, args.output, config=config)
     print("--- Open DDE v3-like enhancement complete ---")
-    print(f"✅ 结果已保存至: {os.path.abspath(args.output)}")
+    print(f"✅ 结果已保存至: {Path(args.output).resolve()}")
     print(
         "   "
         f"scene_gain={metrics['scene_gain']:.3f}, "

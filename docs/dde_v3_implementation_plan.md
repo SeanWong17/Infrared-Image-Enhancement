@@ -334,27 +334,29 @@ Move from single scripts to a small package layout:
 docs/
   dde_formula_breakdown.md
   dde_v3_implementation_plan.md
-src/
-  ir_dde/
-    __init__.py
-    pipeline.py
-    filters.py
-    stats.py
-    detail.py
-    tone_map.py
-    presets.py
-    metrics.py
-    io.py
-cli/
-  enhance_image.py
-  enhance_folder.py
+  assets/
+examples/
+  single/
+  batch/
+ir_dde/
+  __init__.py
+  pipeline.py
+  filters.py
+  stats.py
+  detail.py
+  tone_map.py
+  presets.py
+  metrics.py
+  cli/
+    enhance.py
+    batch.py
+    linear.py
+    evaluate.py
+    visualize.py
 tests/
   test_pipeline.py
   test_filters.py
   test_metrics.py
-scripts/
-  benchmark_folder.py
-  compare_presets.py
 ```
 
 Recommended module responsibilities:
@@ -375,7 +377,7 @@ Replace script-only code with library code while preserving current behavior.
 
 Tasks:
 
-- move current `enhance_v2.py` logic into `src/ir_dde/pipeline.py`;
+- move the current baseline logic into `ir_dde/pipeline.py`;
 - add CLI wrappers for single image and folder processing;
 - normalize path handling;
 - add config dataclass or YAML preset loading.
@@ -543,13 +545,12 @@ Mitigation:
 
 The fastest path from the current state is:
 
-1. Keep `enhance_v2.py` as the reference baseline.
-2. Refactor it into a package.
-3. Implement a new `OpenDDEV3Config`.
-4. Replace the single bilateral split with guided multi-scale decomposition.
-5. Add local edge-aware gain and robust noise gating.
-6. Add hotspot protection and scene-adaptive base compression.
-7. Add benchmark scripts and intermediate debug output.
+1. Keep a stable baseline implementation inside the `ir_dde` package.
+2. Maintain a typed `OpenDDEV3Config`.
+3. Replace the single bilateral split with guided multi-scale decomposition.
+4. Add local edge-aware gain and robust noise gating.
+5. Add hotspot protection and scene-adaptive base compression.
+6. Add benchmark and debug tooling through CLI utilities.
 
 ## 12. Definition of Success
 
@@ -557,7 +558,7 @@ This repository can reasonably claim to be an advanced practical open-source `DD
 
 - clearly documented decomposition pipeline;
 - reproducible presets and CLI;
-- visible improvement over linear, HE, CLAHE, and current `enhance_v2.py`;
+- visible improvement over linear, HE, CLAHE, and the initial baseline implementation;
 - better noise-detail balance than a naive bilateral residual method;
 - code structure suitable for further optimization or deployment.
 

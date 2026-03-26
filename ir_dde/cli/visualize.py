@@ -1,15 +1,7 @@
 import argparse
-import sys
-from pathlib import Path
 
 import cv2
 import numpy as np
-
-
-ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
 
 from ir_dde import enhance_frame, get_preset, linear_baseline
 from ir_dde.pipeline import load_image, save_image
@@ -58,7 +50,7 @@ def build_panel(raw: np.ndarray, enhanced: np.ndarray, debug: dict[str, np.ndarr
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Visualize the Open DDE v3-like pipeline and intermediate maps.")
-    parser.add_argument("-i", "--input", required=True, help="Input infrared image path.")
+    parser.add_argument("-i", "--input", default="examples/single/original_16bit.tif", help="Input infrared image path.")
     parser.add_argument("-o", "--output", default="comparisons/pipeline_panel.png", help="Panel output path.")
     parser.add_argument("--enhanced_out", default="", help="Optional path to save the enhanced image itself.")
     parser.add_argument(

@@ -1,4 +1,3 @@
-import sys
 import unittest
 from pathlib import Path
 
@@ -7,16 +6,13 @@ import numpy as np
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
 
 from ir_dde import OpenDDEV3Config, enhance_frame, enhance_image_file
 
 
 class PipelineTest(unittest.TestCase):
     def test_enhance_frame_returns_u8_image(self) -> None:
-        image = cv2.imread(str(ROOT / "images" / "original_16bit.tif"), cv2.IMREAD_UNCHANGED)
+        image = cv2.imread(str(ROOT / "examples" / "single" / "original_16bit.tif"), cv2.IMREAD_UNCHANGED)
         self.assertIsNotNone(image)
 
         output = enhance_frame(image, OpenDDEV3Config())
@@ -27,7 +23,7 @@ class PipelineTest(unittest.TestCase):
 
     def test_enhance_image_file_writes_output(self) -> None:
         output_path = Path("/tmp/infrared_dde_test.png")
-        metrics = enhance_image_file(ROOT / "images" / "original_16bit.tif", output_path, OpenDDEV3Config())
+        metrics = enhance_image_file(ROOT / "examples" / "single" / "original_16bit.tif", output_path, OpenDDEV3Config())
 
         self.assertTrue(output_path.exists())
         self.assertIn("scene_gain", metrics)

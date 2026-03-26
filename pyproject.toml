@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ir-dde"
+version = "0.1.0"
+description = "Open-source infrared Digital Detail Enhancement style image enhancement toolkit."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "SeanWong17" }
+]
+dependencies = [
+  "numpy",
+  "opencv-python",
+]
+
+[project.urls]
+Homepage = "https://github.com/SeanWong17/Infrared-Image-Enhancement"
+Repository = "https://github.com/SeanWong17/Infrared-Image-Enhancement"
+
+[project.scripts]
+ir-dde-enhance = "ir_dde.cli.enhance:main"
+ir-dde-batch = "ir_dde.cli.batch:main"
+ir-dde-linear = "ir_dde.cli.linear:main"
+ir-dde-eval = "ir_dde.cli.evaluate:main"
+ir-dde-viz = "ir_dde.cli.visualize:main"
+
+[tool.setuptools.packages.find]
+include = ["ir_dde*"]

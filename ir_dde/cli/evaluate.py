@@ -1,15 +1,8 @@
 import argparse
 import csv
-import sys
 from pathlib import Path
 
 import cv2
-
-
-ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
 
 from ir_dde import evaluate_against_linear_baseline
 
@@ -62,7 +55,7 @@ def summarize(rows: list[dict[str, float | str]]) -> dict[str, float]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Evaluate enhanced infrared outputs against a robust linear baseline.")
-    parser.add_argument("--raw_dir", required=True, help="Directory containing raw TIFF images.")
+    parser.add_argument("--raw_dir", default="examples/batch/raw", help="Directory containing raw TIFF images.")
     parser.add_argument("--enhanced_dir", required=True, help="Directory containing enhanced outputs.")
     parser.add_argument("--csv", default="reports/eval_metrics.csv", help="CSV output path.")
     args = parser.parse_args()
