@@ -38,13 +38,37 @@ I_{enhanced} = \text{PercentileRemap}(\,I'_{base} + h(x)I'_{detail}\,)
 
 ## 📊 效果演示
 
-为了直观展示算法效果，我们将直接线性拉伸的 8 位图与增强后的 8 位图进行对比。
+为了更直观地展示当前实现的表现，这里给出三组单图样例的前后对比。所有样例都可以在仓库中直接复现。
 
-| 直接线性拉伸 (Stretched 8-bit) | 本算法增强后 (Enhanced 8-bit) |
-| :---------------------------------: | :----------------------------------: |
-|  ![直接拉伸图](docs/assets/stretched_8bit.png)   | ![算法增强图](docs/assets/enhanced_8bit.png)  |
+### 样例 1：原始示例图
 
-从对比中可以明显看出，增强后的图像无论是在场景的整体对比度，还是在云层、地物等局部细节的表现力上，都得到了显著提升。
+| 线性拉伸 (Linear Baseline) | Open DDE v3-like |
+| :------------------------: | :--------------: |
+| ![原始示例线性拉伸](docs/assets/stretched_8bit.png) | ![原始示例增强结果](docs/assets/enhanced_8bit.png) |
+
+对应原图：
+
+- `examples/single/original_16bit.tif`（测试图）
+
+### 样例 2：Zenmuse 护栏场景
+
+| 线性拉伸 | Open DDE v3-like |
+| :------: | :--------------: |
+| ![Zenmuse 线性拉伸](docs/assets/zenmuse_xtr_linear.jpg) | ![Zenmuse 增强结果](docs/assets/zenmuse_xtr_enhanced.jpg) |
+
+对应原图：
+
+- `examples/single/zenmuse_xtr_pure.tiff`
+
+### 样例 3：道路夜景 / 候车亭场景
+
+| 线性拉伸 | Open DDE v3-like |
+| :------: | :--------------: |
+| ![道路场景线性拉伸](docs/assets/road_scene_linear.jpg) | ![道路场景增强结果](docs/assets/road_scene_enhanced.jpg) |
+
+对应原图：
+
+- `examples/single/road_scene_bus_stop.tiff`
 
 ## 🚀 如何运行
 
@@ -60,7 +84,12 @@ pip install -e .
 
 ### 2. 准备图像
 
-将您的 **16 位单通道 TIF 格式** 红外原图放入任意目录。仓库自带的单图示例位于 `examples/single/original_16bit.tif`，批处理样例位于 `examples/batch/raw/`。
+将您的 **16 位单通道 TIF 格式** 红外原图放入任意目录。仓库自带了三张 single 示例和一组 batch 示例：
+
+- `examples/single/original_16bit.tif`（测试图）
+- `examples/single/zenmuse_xtr_pure.tiff`
+- `examples/single/road_scene_bus_stop.tiff`
+- `examples/batch/raw/`
 
 ### 3. 执行增强脚本
 
@@ -72,6 +101,12 @@ ir-dde-enhance -i examples/single/original_16bit.tif -o output/enhanced_result.p
 
 # 使用更激进的细节增强预设
 ir-dde-enhance -i examples/single/original_16bit.tif -o output/enhanced_detail.png --preset detail_plus
+
+# 处理 Zenmuse 护栏样例
+ir-dde-enhance -i examples/single/zenmuse_xtr_pure.tiff -o output/zenmuse_xtr_enhanced.png
+
+# 处理道路夜景样例
+ir-dde-enhance -i examples/single/road_scene_bus_stop.tiff -o output/road_scene_enhanced.png
 
 # 批处理整个目录
 ir-dde-batch -i examples/batch/raw -o output_batch --out_ext .png --preset balanced
@@ -115,6 +150,18 @@ ir-dde-viz -i examples/single/original_16bit.tif -o comparisons/pipeline_panel.p
 - `examples/batch/linear/`: 线性拉伸样例
 - `examples/batch/enhanced/`: 增强结果样例
 - `pyproject.toml`: 项目元数据和 console scripts 配置
+
+## 致谢与来源说明
+
+- `examples/batch/raw/video-*.tiff` 为道路热像样例帧。根据场景内容、分辨率和热像风格判断，这组数据大概率整理自公开的 `Teledyne FLIR Free Starter Thermal ADAS Dataset` 或其扩展版本。由于当前仓库中的文件名已是二次整理名称，且原始元数据未完整保留，这一来源说明属于基于现有信息的归纳性标注。
+- `docs/assets/zenmuse_xtr_reference.jpg` 对应 GitHub 仓库 `ITVRoC/FlirImageExtractor` 中的公开示例文件 `examples/zenmuse_xtr.jpg`。`examples/single/zenmuse_xtr_pure.tiff` 为基于该公开样片整理的纯热像处理样例，特此致谢。
+- `examples/single/original_16bit.tif` 仅用作算法测试输入，不作为实拍样例来源展示。
+- Teledyne FLIR 热像数据集官方页面：
+  https://oem.flir.com/en-150/solutions/automotive/adas-dataset-form/
+- DJI Zenmuse XT 官方产品页面：
+  https://www.dji.com/li/zenmuse-xt
+- `ITVRoC/FlirImageExtractor` 仓库：
+  https://github.com/ITVRoC/FlirImageExtractor
 
 ## 展望
 

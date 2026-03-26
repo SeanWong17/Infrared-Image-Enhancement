@@ -29,9 +29,37 @@ I_{original} \xrightarrow{decompose} (I_{base}, I_{detail}) \xrightarrow{process
 
 ## Visual Comparison
 
+Three single-image examples are included below so the effect can be inspected on different scene types.
+
+### Example 1: Original Demo Frame
+
 | Linear Stretch | Enhanced Output |
 | :------------: | :-------------: |
 | ![Linear](docs/assets/stretched_8bit.png) | ![Enhanced](docs/assets/enhanced_8bit.png) |
+
+Source file:
+
+- `examples/single/original_16bit.tif` (test image)
+
+### Example 2: Zenmuse Guardrail Scene
+
+| Linear Stretch | Enhanced Output |
+| :------------: | :-------------: |
+| ![Zenmuse Linear](docs/assets/zenmuse_xtr_linear.jpg) | ![Zenmuse Enhanced](docs/assets/zenmuse_xtr_enhanced.jpg) |
+
+Source file:
+
+- `examples/single/zenmuse_xtr_pure.tiff`
+
+### Example 3: Night Road / Bus Stop Scene
+
+| Linear Stretch | Enhanced Output |
+| :------------: | :-------------: |
+| ![Road Linear](docs/assets/road_scene_linear.jpg) | ![Road Enhanced](docs/assets/road_scene_enhanced.jpg) |
+
+Source file:
+
+- `examples/single/road_scene_bus_stop.tiff`
 
 ## Installation
 
@@ -43,7 +71,12 @@ pip install -e .
 
 ## Usage
 
-The repository includes a single-image example at `examples/single/original_16bit.tif` and a batch dataset under `examples/batch/raw/`.
+The repository includes three single-image examples and one batch dataset:
+
+- `examples/single/original_16bit.tif` (test image)
+- `examples/single/zenmuse_xtr_pure.tiff`
+- `examples/single/road_scene_bus_stop.tiff`
+- `examples/batch/raw/`
 
 ```bash
 # Enhance one image
@@ -51,6 +84,12 @@ ir-dde-enhance -i examples/single/original_16bit.tif -o output/enhanced_result.p
 
 # Use a stronger preset
 ir-dde-enhance -i examples/single/original_16bit.tif -o output/enhanced_detail.png --preset detail_plus
+
+# Process the Zenmuse sample
+ir-dde-enhance -i examples/single/zenmuse_xtr_pure.tiff -o output/zenmuse_xtr_enhanced.png
+
+# Process the road-scene sample
+ir-dde-enhance -i examples/single/road_scene_bus_stop.tiff -o output/road_scene_enhanced.png
 
 # Batch processing
 ir-dde-batch -i examples/batch/raw -o output_batch --out_ext .png --preset balanced
@@ -86,6 +125,18 @@ ir-dde-viz -i examples/single/original_16bit.tif -o comparisons/pipeline_panel.p
 - `examples/batch/linear/`: linear baseline examples
 - `examples/batch/enhanced/`: enhanced example outputs
 - `pyproject.toml`: project metadata and console script configuration
+
+## Acknowledgements and Source Notes
+
+- The `examples/batch/raw/video-*.tiff` files are road-scene thermal sample frames. Based on their scene content, resolution, and thermal imaging style, they are most likely organized from the public `Teledyne FLIR Free Starter Thermal ADAS Dataset` or its expanded release. Since the filenames in this repository are post-processed names and the original metadata was not fully preserved, this source note should be understood as an informed attribution rather than a fully verified archival record.
+- `docs/assets/zenmuse_xtr_reference.jpg` corresponds to the public sample file `examples/zenmuse_xtr.jpg` in the GitHub repository `ITVRoC/FlirImageExtractor`. The file `examples/single/zenmuse_xtr_pure.tiff` is included here as a pure-thermal processing example organized from that public sample, and the repository is credited accordingly.
+- `examples/single/original_16bit.tif` is included only as a test input and is not presented as a captured real-world sample.
+- Teledyne FLIR dataset page:
+  https://oem.flir.com/en-150/solutions/automotive/adas-dataset-form/
+- DJI Zenmuse XT official page:
+  https://www.dji.com/li/zenmuse-xt
+- `ITVRoC/FlirImageExtractor` repository:
+  https://github.com/ITVRoC/FlirImageExtractor
 
 ## Design Notes
 
