@@ -1,4 +1,4 @@
-# Open DDE: 基于图像分解的红外图像增强项目
+# Infrared-Image-Enhancement: 基于图像分解的红外图像增强项目
 
 [中文](README.md) | [English](README.en.md)
 
@@ -12,7 +12,7 @@
 
 红外热成像捕捉的是物体表面的温度分布，其原始数据（通常为12-16位）包含了极宽的温度动态范围。然而，人眼和标准显示设备只能感知和展示有限的8位（256级）灰度。这导致原始红外图像直接显示时，往往呈现为一片灰蒙蒙的景象，目标与背景的温差细节被严重压缩，难以分辨。
 
-当前实现采用 `Open DDE v3-like` 的分解增强策略：在压缩图像动态范围的同时，使用多尺度边缘保持分解、局部细节增益、噪声门控和热点保护，增强局部纹理和边缘细节。
+当前实现采用 `DDE-like` 的分解增强策略：在压缩图像动态范围的同时，使用多尺度边缘保持分解、局部细节增益、噪声门控和热点保护，增强局部纹理和边缘细节。
 
 ## ⚙️ 算法核心原理
 
@@ -42,7 +42,7 @@ I_{enhanced} = \text{PercentileRemap}(\,I'_{base} + h(x)I'_{detail}\,)
 
 ### 样例 1：原始示例图
 
-| 线性拉伸 (Linear Baseline) | Open DDE v3-like |
+| 线性拉伸 (Linear Baseline) | 本项目输出 |
 | :------------------------: | :--------------: |
 | ![原始示例线性拉伸](docs/assets/stretched_8bit.png) | ![原始示例增强结果](docs/assets/enhanced_8bit.png) |
 
@@ -52,7 +52,7 @@ I_{enhanced} = \text{PercentileRemap}(\,I'_{base} + h(x)I'_{detail}\,)
 
 ### 样例 2：Zenmuse 护栏场景
 
-| 线性拉伸 | Open DDE v3-like |
+| 线性拉伸 | 本项目输出 |
 | :------: | :--------------: |
 | ![Zenmuse 线性拉伸](docs/assets/zenmuse_xtr_linear.jpg) | ![Zenmuse 增强结果](docs/assets/zenmuse_xtr_enhanced.jpg) |
 
@@ -62,7 +62,7 @@ I_{enhanced} = \text{PercentileRemap}(\,I'_{base} + h(x)I'_{detail}\,)
 
 ### 样例 3：道路夜景 / 候车亭场景
 
-| 线性拉伸 | Open DDE v3-like |
+| 线性拉伸 | 本项目输出 |
 | :------: | :--------------: |
 | ![道路场景线性拉伸](docs/assets/road_scene_linear.jpg) | ![道路场景增强结果](docs/assets/road_scene_enhanced.jpg) |
 
@@ -179,4 +179,4 @@ ir-dde-viz -i examples/single/original_16bit.tif -o comparisons/pipeline_panel.p
 
 ## 📄 License
 
-本项目采用 [MIT License](LICENSE) 开源。
+本项目采用 [MIT License](LICENSE) 开源，版权署名为 SeanWong17。

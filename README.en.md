@@ -1,4 +1,4 @@
-# Open DDE: Decomposition-Based Infrared Image Enhancement
+# Infrared-Image-Enhancement: Decomposition-Based Infrared Image Enhancement
 
 [中文](README.md) | [English](README.en.md)
 
@@ -12,7 +12,7 @@ An infrared image enhancement project built with Python and OpenCV. The goal is 
 
 Thermal imagery records surface temperature distributions. Raw thermal frames are often stored in `12/14/16-bit` formats, while common displays and human visual perception are limited to `8-bit` grayscale. Direct display therefore tends to look flat and washed out, with weak local contrast and poor target visibility.
 
-The current implementation follows an `Open DDE v3-like` strategy: multi-scale edge-preserving decomposition, local detail gain, noise gating, hotspot protection, and display-oriented remapping.
+The current implementation follows a `DDE-like` strategy: multi-scale edge-preserving decomposition, local detail gain, noise gating, hotspot protection, and display-oriented remapping.
 
 ## Core Idea
 
@@ -141,8 +141,8 @@ ir-dde-viz -i examples/single/original_16bit.tif -o comparisons/pipeline_panel.p
 ## Design Notes
 
 - `docs/dde_formula_breakdown.md`: formula-level breakdown of DDE-like enhancement
-- `docs/dde_v3_implementation_plan.md`: implementation plan for the Open DDE v3-like pipeline
+- `docs/dde_v3_implementation_plan.md`: implementation plan for the DDE-like enhancement pipeline
 
 ## License
 
-Released under the [MIT License](LICENSE).
+Released under the [MIT License](LICENSE). Copyright (c) 2025 SeanWong17.
