@@ -128,15 +128,8 @@ ir-dde-viz -i examples/single/original_16bit.tif -o comparisons/pipeline_panel.p
 
 ## Acknowledgements and Source Notes
 
-- The `examples/batch/raw/video-*.tiff` files are road-scene thermal sample frames. Based on their scene content, resolution, and thermal imaging style, they are most likely organized from the public `Teledyne FLIR Free Starter Thermal ADAS Dataset` or its expanded release. Since the filenames in this repository are post-processed names and the original metadata was not fully preserved, this source note should be understood as an informed attribution rather than a fully verified archival record.
-- `docs/assets/zenmuse_xtr_reference.jpg` corresponds to the public sample file `examples/zenmuse_xtr.jpg` in the GitHub repository `ITVRoC/FlirImageExtractor`. The file `examples/single/zenmuse_xtr_pure.tiff` is included here as a pure-thermal processing example organized from that public sample, and the repository is credited accordingly.
-- `examples/single/original_16bit.tif` is included only as a test input and is not presented as a captured real-world sample.
-- Teledyne FLIR dataset page:
-  https://oem.flir.com/en-150/solutions/automotive/adas-dataset-form/
-- DJI Zenmuse XT official page:
-  https://www.dji.com/li/zenmuse-xt
-- `ITVRoC/FlirImageExtractor` repository:
-  https://github.com/ITVRoC/FlirImageExtractor
+- The `examples/batch/raw/video-*.tiff` files are road-scene thermal sample frames, with source reference: `Teledyne FLIR Free Starter Thermal ADAS Dataset` https://oem.flir.com/en-150/solutions/automotive/adas-dataset-form/
+- `docs/assets/zenmuse_xtr_reference.jpg` corresponds to the public sample `examples/zenmuse_xtr.jpg` from `ITVRoC/FlirImageExtractor`; related links: repository https://github.com/ITVRoC/FlirImageExtractor and DJI Zenmuse XT official page https://www.dji.com/li/zenmuse-xt
 
 ## Design Notes
 

@@ -153,15 +153,8 @@ ir-dde-viz -i examples/single/original_16bit.tif -o comparisons/pipeline_panel.p
 
 ## 致谢与来源说明
 
-- `examples/batch/raw/video-*.tiff` 为道路热像样例帧。根据场景内容、分辨率和热像风格判断，这组数据大概率整理自公开的 `Teledyne FLIR Free Starter Thermal ADAS Dataset` 或其扩展版本。由于当前仓库中的文件名已是二次整理名称，且原始元数据未完整保留，这一来源说明属于基于现有信息的归纳性标注。
-- `docs/assets/zenmuse_xtr_reference.jpg` 对应 GitHub 仓库 `ITVRoC/FlirImageExtractor` 中的公开示例文件 `examples/zenmuse_xtr.jpg`。`examples/single/zenmuse_xtr_pure.tiff` 为基于该公开样片整理的纯热像处理样例，特此致谢。
-- `examples/single/original_16bit.tif` 仅用作算法测试输入，不作为实拍样例来源展示。
-- Teledyne FLIR 热像数据集官方页面：
-  https://oem.flir.com/en-150/solutions/automotive/adas-dataset-form/
-- DJI Zenmuse XT 官方产品页面：
-  https://www.dji.com/li/zenmuse-xt
-- `ITVRoC/FlirImageExtractor` 仓库：
-  https://github.com/ITVRoC/FlirImageExtractor
+- `examples/batch/raw/video-*.tiff` 为道路热像样例帧，来源参考 `Teledyne FLIR Free Starter Thermal ADAS Dataset`：https://oem.flir.com/en-150/solutions/automotive/adas-dataset-form/
+- `docs/assets/zenmuse_xtr_reference.jpg` 对应 `ITVRoC/FlirImageExtractor` 的公开示例 `examples/zenmuse_xtr.jpg`，相关链接：仓库 https://github.com/ITVRoC/FlirImageExtractor ，DJI Zenmuse XT 官方页面 https://www.dji.com/li/zenmuse-xt
 
 ## 展望
 
