@@ -6,8 +6,16 @@ import numpy as np
 
 from .config import OpenDDEV3Config
 from .filters import difference_of_gaussians, ensure_grayscale, guided_filter
+from .legacy import enhance_frame_legacy
 from .stats import SceneStats, compute_scene_stats, estimate_noise, local_variance, robust_normalize
-from .tone_map import adaptive_log_compression, apply_clahe, percentile_remap, sigmoid, soft_knee
+from .tone_map import (
+    adaptive_log_compression,
+    apply_clahe,
+    percentile_remap,
+    plateau_histogram_equalization,
+    sigmoid,
+    soft_knee,
+)
 
 
 def _scene_detail_gain(stats: SceneStats) -> float:
@@ -35,6 +43,31 @@ def enhance_frame(
 ) -> np.ndarray | tuple[np.ndarray, dict[str, np.ndarray | float | dict[str, float]]]:
     cfg = config or OpenDDEV3Config()
     gray = ensure_grayscale(image)
+
+    if cfg.legacy_mode:
+        output_u8 = enhance_frame_legacy(
+            gray,
+            plateau_ratio=cfg.plateau_ratio,
+            detail_sigma_mult=cfg.legacy_detail_sigma_mult,
+            detail_max=cfg.legacy_detail_max,
+            bilateral_d=cfg.legacy_bilateral_d,
+            bilateral_sigma_color=cfg.legacy_bilateral_sigma_color,
+            bilateral_sigma_space=cfg.legacy_bilateral_sigma_space,
+        )
+        if not return_debug:
+            return output_u8
+        normalized = output_u8.astype(np.float32) / 255.0
+        stats = compute_scene_stats(normalized)
+        return output_u8, {
+            "normalized": normalized,
+            "stats": asdict(stats),
+            "noise_sigma": 0.0,
+            "scene_gain": 1.0,
+            "norm_min": float(gray.min()),
+            "norm_max": float(gray.max()),
+            "legacy": True,
+        }
+
     normalized, norm_lo, norm_hi = robust_normalize(gray, cfg.input_percentile_low, cfg.input_percentile_high)
     stats = compute_scene_stats(normalized)
 
@@ -66,12 +99,17 @@ def enhance_frame(
     spatial_gate = sigmoid(cfg.spatial_gate_steepness * (edge_confidence - cfg.spatial_threshold))
     detail_control = amplitude_gate * spatial_gate * local_gain * scene_gain * detail_scaled
 
-    base_global = adaptive_log_compression(base_coarse, stats, cfg.base_log_strength)
-    if cfg.base_local_contrast_mix > 0:
-        base_local = apply_clahe(base_global, cfg.clahe_clip_limit, cfg.clahe_tile_grid_size)
-        base_display = (1.0 - cfg.base_local_contrast_mix) * base_global + cfg.base_local_contrast_mix * base_local
+    if cfg.base_method == "plateau_he":
+        base_display = plateau_histogram_equalization(base_coarse, cfg.plateau_ratio)
+    elif cfg.base_method == "log_clahe":
+        base_global = adaptive_log_compression(base_coarse, stats, cfg.base_log_strength)
+        if cfg.base_local_contrast_mix > 0:
+            base_local = apply_clahe(base_global, cfg.clahe_clip_limit, cfg.clahe_tile_grid_size)
+            base_display = (1.0 - cfg.base_local_contrast_mix) * base_global + cfg.base_local_contrast_mix * base_local
+        else:
+            base_display = base_global
     else:
-        base_display = base_global
+        raise ValueError(f"Unknown base_method: {cfg.base_method!r}")
 
     hotspot_mask = _hotspot_mask(base_coarse, stats, cfg)
     fused = base_display + cfg.d2br * hotspot_mask * detail_control

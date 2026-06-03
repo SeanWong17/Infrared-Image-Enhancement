@@ -23,13 +23,17 @@ I_{original} \xrightarrow{decompose} (I_{base}, I_{detail}) \xrightarrow{process
 ```
 
 1. **Decomposition**: use guided filtering to build two base layers and one multi-scale detail signal.
-2. **Base processing**: compress dynamic range with adaptive log mapping and mild local contrast enhancement.
+2. **Base processing**: two strategies available:
+   - `log_clahe` (default): compress dynamic range with adaptive log mapping and mild local contrast enhancement (CLAHE).
+   - `plateau_he`: plateau histogram equalization on the base layer, producing a visual style closer to earlier versions.
 3. **Detail processing**: apply signed detail gain with clipping, edge-aware masking, and noise gating.
 4. **Fusion**: combine processed base and detail, then remap to `[0, 255]`.
 
 ## Visual Comparison
 
 Three single-image examples are included below so the effect can be inspected on different scene types.
+
+> ⚠️ The showcase images under `docs/assets/` and `examples/batch/enhanced/` were produced with the `legacy` preset (bilateral filter + plateau histogram equalization). To reproduce them, use `--preset legacy`. The current default preset `balanced` uses the DDE v3-like pipeline (guided filter + adaptive log + CLAHE) and produces more conservative output.
 
 ### Example 1: Original Demo Frame
 
@@ -94,6 +98,12 @@ ir-dde-enhance -i examples/single/road_scene_bus_stop.tiff -o output/road_scene_
 # Batch processing
 ir-dde-batch -i examples/batch/raw -o output_batch --out_ext .png --preset balanced
 
+# Use legacy preset to reproduce the showcase visual style
+ir-dde-enhance -i examples/single/original_16bit.tif -o output/enhanced_legacy.png --preset legacy
+
+# Use plateau histogram equalization as base processing (within the v3 framework)
+ir-dde-enhance -i examples/single/original_16bit.tif -o output/enhanced_plateau.png --base_method plateau_he
+
 # Generate linear baseline images
 ir-dde-linear -i examples/batch/raw -o output_linear --out_ext .png
 ```
@@ -138,4 +148,4 @@ ir-dde-viz -i examples/single/original_16bit.tif -o comparisons/pipeline_panel.p
 
 ## License
 
-Released under the [MIT License](LICENSE). Copyright (c) 2025 SeanWong17.
+Released under the [MIT License](LICENSE).

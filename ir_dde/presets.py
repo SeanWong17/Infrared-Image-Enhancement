@@ -39,4 +39,11 @@ def get_preset(name: str) -> OpenDDEV3Config:
             output_percentile_low=1.0,
             output_percentile_high=99.0,
         )
+    if preset == "legacy":
+        return base.with_updates(
+            legacy_mode=True,
+            plateau_ratio=0.001,
+            legacy_detail_sigma_mult=2.0,
+            legacy_detail_max=25.0,
+        )
     raise ValueError(f"Unknown preset: {name}")

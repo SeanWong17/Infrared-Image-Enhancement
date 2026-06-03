@@ -26,6 +26,20 @@ def apply_clahe(image: np.ndarray, clip_limit: float, tile_grid_size: int) -> np
     return clahe.apply(src_u8).astype(np.float32) / 255.0
 
 
+def plateau_histogram_equalization(image: np.ndarray, plateau_ratio: float, bins: int = 65536) -> np.ndarray:
+    src = np.clip(np.asarray(image, dtype=np.float32), 0.0, 1.0)
+    quantized = np.clip(src * (bins - 1), 0.0, bins - 1).astype(np.uint16)
+    hist, _ = np.histogram(quantized.ravel(), bins=bins, range=(0, bins))
+    threshold = src.size * float(plateau_ratio)
+    clipped = np.minimum(hist, threshold)
+    cdf = np.cumsum(clipped)
+    span = float(cdf[-1] - cdf[0])
+    if span < 1e-9:
+        return src
+    lut = ((cdf - cdf[0]) / span).astype(np.float32)
+    return lut[quantized]
+
+
 def percentile_remap(image: np.ndarray, low_percentile: float, high_percentile: float) -> np.ndarray:
     src = np.asarray(image, dtype=np.float32)
     lo = float(np.percentile(src, low_percentile))

@@ -28,7 +28,9 @@ I_{original} \xrightarrow{分解} (I_{base}, I_{detail}) \xrightarrow{处理} (I
     $$I_{detail} = \alpha(I_{original} - I_{base,1}) + \beta(I_{base,1} - I_{base,2})$$
 
 2.  **分层处理 (Processing)**:
-    * **基础层处理**: 对基础层应用自适应对数压缩和轻量局部对比度增强，控制高亮主导区域对显示动态范围的占用。
+    * **基础层处理**: 提供两种可选策略：
+      - `log_clahe`（默认）：自适应对数压缩 + 轻量局部对比度增强（CLAHE），控制高亮主导区域对显示动态范围的占用。
+      - `plateau_he`：平台直方图均衡，对基础层进行带平台限幅的直方图均衡化，视觉风格更接近早期版本。
     * **细节层处理**: 对细节层进行带限幅的**有符号非线性增益**，并结合局部方差掩模、噪声门控和空间门控抑制平坦区域噪声。
 
 3.  **图像融合 (Fusion)**: 将处理后的两层相加，并通过归一化操作将像素值线性拉伸到 `[0, 255]` 区间，得到最终的8位增强图像 $I_{enhanced}$。
@@ -39,6 +41,8 @@ I_{enhanced} = \text{PercentileRemap}(\,I'_{base} + h(x)I'_{detail}\,)
 ## 📊 效果演示
 
 为了更直观地展示当前实现的表现，这里给出三组单图样例的前后对比。所有样例都可以在仓库中直接复现。
+
+> ⚠️ `docs/assets/` 与 `examples/batch/enhanced/` 下的展示图均为 `legacy` 预设（双边滤波 + 平台直方图均衡）的视觉风格；要复现这些图，请使用 `--preset legacy`。当前默认预设 `balanced` 走 DDE v3-like 管线（引导滤波 + 自适应对数 + CLAHE），输出整体更温和保守。
 
 ### 样例 1：原始示例图
 
@@ -111,6 +115,12 @@ ir-dde-enhance -i examples/single/road_scene_bus_stop.tiff -o output/road_scene_
 # 批处理整个目录
 ir-dde-batch -i examples/batch/raw -o output_batch --out_ext .png --preset balanced
 
+# 使用 legacy 预设复现展示图视觉风格
+ir-dde-enhance -i examples/single/original_16bit.tif -o output/enhanced_legacy.png --preset legacy
+
+# 使用平台直方图均衡作为基础层处理（在 v3 框架内）
+ir-dde-enhance -i examples/single/original_16bit.tif -o output/enhanced_plateau.png --base_method plateau_he
+
 # 生成线性拉伸基线
 ir-dde-linear -i examples/batch/raw -o output_linear --out_ext .png
 ```
@@ -172,4 +182,4 @@ ir-dde-viz -i examples/single/original_16bit.tif -o comparisons/pipeline_panel.p
 
 ## 📄 License
 
-本项目采用 [MIT License](LICENSE) 开源，版权署名为 SeanWong17。
+本项目采用 [MIT License](LICENSE) 开源。

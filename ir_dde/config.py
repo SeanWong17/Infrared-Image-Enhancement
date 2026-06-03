@@ -36,6 +36,16 @@ class OpenDDEV3Config:
     clahe_clip_limit: float = 2.0
     clahe_tile_grid_size: int = 8
 
+    base_method: str = "log_clahe"
+    plateau_ratio: float = 0.001
+
+    legacy_mode: bool = False
+    legacy_detail_sigma_mult: float = 2.0
+    legacy_detail_max: float = 25.0
+    legacy_bilateral_d: int = 9
+    legacy_bilateral_sigma_color: float = 25.0
+    legacy_bilateral_sigma_space: float = 80.0
+
     hotspot_protect: float = 0.35
     hotspot_percentile: float = 90.0
     hotspot_gate_steepness: float = 8.0

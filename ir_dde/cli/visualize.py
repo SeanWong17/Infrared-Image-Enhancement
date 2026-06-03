@@ -56,7 +56,7 @@ def main() -> int:
     parser.add_argument(
         "--preset",
         default="balanced",
-        choices=["balanced", "detail_plus", "noise_safe", "hot_scene", "radiometric_safe"],
+        choices=["balanced", "detail_plus", "noise_safe", "hot_scene", "radiometric_safe", "legacy"],
         help="调参预设。",
     )
     args = parser.parse_args()
