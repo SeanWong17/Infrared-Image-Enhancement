@@ -33,6 +33,18 @@ def tile_with_label(image: np.ndarray, label: str, target_size: tuple[int, int])
 
 def build_panel(raw: np.ndarray, enhanced: np.ndarray, debug: dict[str, np.ndarray | float | dict[str, float]]) -> np.ndarray:
     baseline = linear_baseline(raw)
+    if debug.get("natural"):
+        maps = [(baseline, "linear_baseline"), (enhanced, "natural")]
+        for key in ("base", "base_display", "detail", "detail_control", "local_variance", "fused"):
+            maps.append((render_map(debug[key], signed=key in ("detail", "detail_control")), key))
+        tiles = [tile_with_label(image, label, (360, 288)) for image, label in maps]
+        return np.vstack([np.hstack(tiles[:4]), np.hstack(tiles[4:])])
+    if debug.get("legacy"):
+        maps = [(baseline, "linear_baseline"), (enhanced, "legacy")]
+        for key in ("base_bilateral", "base_gaussian", "base_display", "detail", "detail_control", "fused"):
+            maps.append((render_map(debug[key], signed=key == "detail"), key))
+        tiles = [tile_with_label(image, label, (360, 288)) for image, label in maps]
+        return np.vstack([np.hstack(tiles[:4]), np.hstack(tiles[4:])])
     tiles = [
         tile_with_label(baseline, "linear_baseline", (360, 288)),
         tile_with_label(enhanced, "open_dde_v3", (360, 288)),
@@ -56,7 +68,7 @@ def main() -> int:
     parser.add_argument(
         "--preset",
         default="balanced",
-        choices=["balanced", "detail_plus", "noise_safe", "hot_scene", "radiometric_safe", "legacy"],
+        choices=["balanced", "detail_plus", "noise_safe", "hot_scene", "radiometric_safe", "legacy", "natural"],
         help="调参预设。",
     )
     args = parser.parse_args()

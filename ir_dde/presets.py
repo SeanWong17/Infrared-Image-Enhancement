@@ -7,6 +7,8 @@ def get_preset(name: str) -> OpenDDEV3Config:
 
     if preset == "balanced":
         return base
+    if preset == "natural":
+        return base.with_updates(natural_mode=True)
     if preset == "detail_plus":
         return base.with_updates(
             detail_amplitude=0.22,

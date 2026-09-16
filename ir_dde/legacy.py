@@ -10,9 +10,14 @@ def enhance_frame_legacy(
     bilateral_d: int = 9,
     bilateral_sigma_color: float = 25.0,
     bilateral_sigma_space: float = 80.0,
-) -> np.ndarray:
+    return_debug: bool = False,
+) -> np.ndarray | tuple[np.ndarray, dict]:
     if image.ndim != 2:
         raise ValueError("enhance_frame_legacy only supports single-channel input")
+    if image.dtype != np.uint16 or image.size == 0:
+        raise ValueError("legacy requires non-empty uint16 raw DN input; use a v3 preset for normalized floats")
+    if not np.isfinite(plateau_ratio) or plateau_ratio <= 0:
+        raise ValueError("plateau_ratio must be finite and positive")
 
     original_f32 = image.astype(np.float32)
     height, width = original_f32.shape
@@ -24,8 +29,8 @@ def enhance_frame_legacy(
     hist_input = base_layer_bf.astype(np.uint16)
     threshold = height * width * plateau_ratio
     hist, _ = np.histogram(hist_input.flatten(), bins=65536, range=[0, 65536])
-    clipped_hist = np.copy(hist)
-    clipped_hist[clipped_hist > threshold] = threshold
+    # Preserve historical integer clipping except where it erased the entire histogram.
+    clipped_hist = np.minimum(hist, max(1, int(threshold)))
     cdf = np.cumsum(clipped_hist)
     cdf_min = float(cdf.min())
     cdf_max = float(cdf.max())
@@ -44,4 +49,14 @@ def enhance_frame_legacy(
     final_f32 = base_normalized + detail_normalized
     final_u8 = cv2.normalize(final_f32, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
 
-    return final_u8
+    if not return_debug:
+        return final_u8
+    return final_u8, {
+        "legacy": True,
+        "base_bilateral": base_layer_bf,
+        "base_gaussian": base_layer_gauss,
+        "base_display": base_normalized / 255.0,
+        "detail": detail_layer,
+        "detail_control": detail_normalized / 255.0,
+        "fused": final_f32 / 255.0,
+    }

@@ -76,6 +76,14 @@ I_{enhanced} = \text{PercentileRemap}(\,I'_{base} + h(x)I'_{detail}\,)
 
 ## 🚀 如何运行
 
+新增可选 `natural` 预设：受限直方图映射、平坦区噪声估计和保留幅度的细节残差，侧重减少灰白观感与边缘光晕。已查看仓库 12 张去重样例的对照图后保留；部分细纹比 `legacy` 更柔和，默认仍为 `balanced`。实验依据见 [优化记录](docs/optimization_review.md)。
+
+```bash
+ir-dde-enhance -i examples/single/road_scene_bus_stop.tiff -o output/natural.png --preset natural
+```
+
+`natural` 的 CLI 调节项为 `--d2br`（默认 1，0 关闭额外细节）；其他 v3 专用覆盖参数会报错，避免静默失效。库配置还支持输入归一化百分位。`legacy` 要求非空 uint16 原始 DN 输入，CLI 可覆盖 `--plateau_ratio`；归一化浮点数据请使用其他预设。评测按相对路径匹配，缺失、歧义或尺寸不一致会明确报错。
+
 ### 1. 环境准备
 
 克隆本项目并安装依赖。

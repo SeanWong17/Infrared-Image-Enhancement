@@ -7,6 +7,7 @@ import numpy as np
 from .config import OpenDDEV3Config
 from .filters import difference_of_gaussians, ensure_grayscale, guided_filter
 from .legacy import enhance_frame_legacy
+from .natural import enhance_natural
 from .stats import SceneStats, compute_scene_stats, estimate_noise, local_variance, robust_normalize
 from .tone_map import (
     adaptive_log_compression,
@@ -43,9 +44,15 @@ def enhance_frame(
 ) -> np.ndarray | tuple[np.ndarray, dict[str, np.ndarray | float | dict[str, float]]]:
     cfg = config or OpenDDEV3Config()
     gray = ensure_grayscale(image)
+    if gray.size == 0 or not np.isfinite(gray).all():
+        raise ValueError("Input must be non-empty and finite")
+    if cfg.natural_mode and cfg.legacy_mode:
+        raise ValueError("natural_mode and legacy_mode are mutually exclusive")
+    if cfg.natural_mode:
+        return enhance_natural(gray, cfg, return_debug)
 
     if cfg.legacy_mode:
-        output_u8 = enhance_frame_legacy(
+        result = enhance_frame_legacy(
             gray,
             plateau_ratio=cfg.plateau_ratio,
             detail_sigma_mult=cfg.legacy_detail_sigma_mult,
@@ -53,20 +60,22 @@ def enhance_frame(
             bilateral_d=cfg.legacy_bilateral_d,
             bilateral_sigma_color=cfg.legacy_bilateral_sigma_color,
             bilateral_sigma_space=cfg.legacy_bilateral_sigma_space,
+            return_debug=return_debug,
         )
         if not return_debug:
-            return output_u8
-        normalized = output_u8.astype(np.float32) / 255.0
+            return result
+        output_u8, debug = result
+        normalized, norm_lo, norm_hi = robust_normalize(gray, cfg.input_percentile_low, cfg.input_percentile_high)
         stats = compute_scene_stats(normalized)
-        return output_u8, {
+        debug.update({
             "normalized": normalized,
             "stats": asdict(stats),
-            "noise_sigma": 0.0,
+            "noise_sigma": estimate_noise(debug["detail"] / max(norm_hi - norm_lo, 1e-6)),
             "scene_gain": 1.0,
-            "norm_min": float(gray.min()),
-            "norm_max": float(gray.max()),
-            "legacy": True,
-        }
+            "norm_min": norm_lo,
+            "norm_max": norm_hi,
+        })
+        return output_u8, debug
 
     normalized, norm_lo, norm_hi = robust_normalize(gray, cfg.input_percentile_low, cfg.input_percentile_high)
     stats = compute_scene_stats(normalized)

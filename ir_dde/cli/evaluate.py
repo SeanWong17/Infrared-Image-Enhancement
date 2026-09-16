@@ -8,17 +8,28 @@ from ir_dde import evaluate_against_linear_baseline
 
 
 def find_raw_matches(raw_dir: Path, enhanced_dir: Path) -> list[tuple[Path, Path]]:
+    if not raw_dir.is_dir() or not enhanced_dir.is_dir():
+        raise FileNotFoundError("Raw and enhanced directories must exist")
     enhanced_by_stem = {}
-    for path in enhanced_dir.rglob("*"):
+    for path in sorted(enhanced_dir.rglob("*")):
         if path.is_file() and path.suffix.lower() in {".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff"}:
-            enhanced_by_stem[path.stem] = path
+            key = path.relative_to(enhanced_dir).with_suffix("")
+            if key in enhanced_by_stem:
+                raise ValueError(f"Ambiguous enhanced images: {enhanced_by_stem[key]} and {path}")
+            enhanced_by_stem[key] = path
 
     pairs: list[tuple[Path, Path]] = []
+    raw_keys = set()
     for raw_path in sorted(raw_dir.rglob("*")):
         if raw_path.is_file() and raw_path.suffix.lower() in {".tif", ".tiff"}:
-            candidate = enhanced_by_stem.get(raw_path.stem)
-            if candidate is not None:
-                pairs.append((raw_path, candidate))
+            key = raw_path.relative_to(raw_dir).with_suffix("")
+            if key in raw_keys:
+                raise ValueError(f"Ambiguous raw image: {raw_path}")
+            raw_keys.add(key)
+            candidate = enhanced_by_stem.get(key)
+            if candidate is None:
+                raise FileNotFoundError(f"Missing enhanced image for {raw_path}")
+            pairs.append((raw_path, candidate))
     return pairs
 
 
@@ -28,9 +39,11 @@ def evaluate_folder(raw_dir: Path, enhanced_dir: Path) -> list[dict[str, float |
         raw = cv2.imread(str(raw_path), cv2.IMREAD_UNCHANGED)
         enhanced = cv2.imread(str(enhanced_path), cv2.IMREAD_UNCHANGED)
         if raw is None or enhanced is None:
-            continue
+            raise ValueError(f"Unable to read pair: {raw_path}, {enhanced_path}")
+        if raw.ndim != 2 or enhanced.ndim != 2 or raw.shape != enhanced.shape:
+            raise ValueError(f"Expected matching grayscale shapes: {raw_path}, {enhanced_path}")
         metrics = evaluate_against_linear_baseline(raw, enhanced)
-        metrics["name"] = raw_path.stem
+        metrics["name"] = raw_path.relative_to(raw_dir).as_posix()
         results.append(metrics)
     return results
 

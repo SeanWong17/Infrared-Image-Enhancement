@@ -2,6 +2,14 @@
 
 [中文](README.md) | [English](README.en.md)
 
+The optional `natural` preset uses bounded histogram mapping, flat-region noise estimation, and amplitude-preserving detail shrinkage. It was retained after visual comparison of 12 unique repository samples: less washed-out contrast and fewer visible halos than `balanced`, with softer fine textures than `legacy` in some scenes. The default remains `balanced`. See [the visual review](docs/optimization_review.md) for the decision and reproducible experiments.
+
+```bash
+ir-dde-enhance -i examples/single/road_scene_bus_stop.tiff -o output/natural.png --preset natural
+```
+
+For `natural`, the CLI accepts `--d2br` (default 1; 0 disables added detail) and rejects other v3-specific overrides. Library configuration also supports input normalization percentiles. `legacy` now requires non-empty uint16 raw DN data; use another preset for normalized floats. Its CLI accepts `--plateau_ratio`. Evaluation matches relative paths and reports missing, ambiguous, or shape-mismatched pairs as errors.
+
 [![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![OpenCV](https://img.shields.io/badge/OpenCV-4.x-green.svg)](https://opencv.org/)

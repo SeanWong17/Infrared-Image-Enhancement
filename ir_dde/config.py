@@ -40,6 +40,7 @@ class OpenDDEV3Config:
     plateau_ratio: float = 0.001
 
     legacy_mode: bool = False
+    natural_mode: bool = False
     legacy_detail_sigma_mult: float = 2.0
     legacy_detail_max: float = 25.0
     legacy_bilateral_d: int = 9

@@ -22,6 +22,13 @@ def build_config(args: argparse.Namespace) -> OpenDDEV3Config:
     overrides = {k: v for k, v in overrides.items() if v is not None}
     if args.use_dog:
         overrides["use_dog"] = True
+    supported = None
+    if config.natural_mode:
+        supported = {"d2br"}
+    elif config.legacy_mode:
+        supported = {"plateau_ratio"}
+    if supported is not None and overrides.keys() - supported:
+        raise ValueError(f"Unsupported overrides for {args.preset}: {sorted(overrides.keys() - supported)}")
     return config.with_updates(**overrides)
 
 
@@ -32,7 +39,7 @@ def main() -> int:
     parser.add_argument(
         "--preset",
         default="balanced",
-        choices=["balanced", "detail_plus", "noise_safe", "hot_scene", "radiometric_safe", "legacy"],
+        choices=["balanced", "detail_plus", "noise_safe", "hot_scene", "radiometric_safe", "legacy", "natural"],
         help="调参预设。legacy 复现早期双边+平台直方图均衡的视觉风格。",
     )
     parser.add_argument("--d2br", type=float, default=None, help="细节与背景的融合比例。")
